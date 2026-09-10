@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmTwin AI — Smart Farming Digital Twin</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+</head>
+<body>
+<div id="app">
+
+  <!-- ─── Sidebar ─── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">🌾 FarmTwin AI</div>
+      <div class="logo-sub">Digital Twin Smart Farming</div>
+    </div>
+    <div class="demo-badge">🧪 DEMO MODE · Sample Data</div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Farm Overview</div>
+      <a class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a class="nav-item" data-page="my-farm">
+        <span class="nav-icon">🏡</span> My Farm
+      </a>
+
+      <div class="nav-section-label">AI Intelligence</div>
+      <a class="nav-item" data-page="advisor">
+        <span class="nav-icon">🤖</span> AI Advisor
+      </a>
+      <a class="nav-item" data-page="detection">
+        <span class="nav-icon">🔬</span> Disease Detection
+      </a>
+      <a class="nav-item" data-page="irrigation">
+        <span class="nav-icon">💧</span> Irrigation
+      </a>
+      <a class="nav-item" data-page="market">
+        <span class="nav-icon">📈</span> Market Intelligence
+      </a>
+
+      <div class="nav-section-label">Tools</div>
+      <a class="nav-item" data-page="whatif">
+        <span class="nav-icon">🔮</span> What-If Simulator
+      </a>
+      <a class="nav-item" data-page="knowledge">
+        <span class="nav-icon">📚</span> Knowledge Center
+      </a>
+    </nav>
+
+    <div class="sidebar-farm-info">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="status-dot status-online"></span>
+        <span class="farm-info-name">Green Valley Farm</span>
+      </div>
+      <div class="farm-info-meta">🍅 Tomato · 2 Acres · Nashik</div>
+      <div class="farm-info-meta" style="margin-top:3px">Powered by IBM Granite AI</div>
+    </div>
+  </aside>
+
+  <!-- ─── Main Content ─── -->
+  <main class="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-subtitle" id="topbar-sub">FarmTwin Digital Twin Overview</div>
+      </div>
+      <div class="topbar-right">
+        <div class="ibm-badge">IBM watsonx Orchestrate</div>
+        <button class="topbar-btn btn-secondary" onclick="loadDashboard()">🔄 Refresh</button>
+        <button class="topbar-btn btn-primary" onclick="toggleChat()">💬 Ask FarmTwin</button>
+        <button id="mobile-menu-btn" class="topbar-btn btn-secondary" style="display:none">☰</button>
+      </div>
+    </header>
+
+    <!-- Pages Container -->
+    <div class="page-content">
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: DASHBOARD -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-dashboard" class="page">
+
+        <!-- Hero Metrics Row -->
+        <div class="metrics-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+
+          <!-- Farm Health Score -->
+          <div class="metric-card" style="grid-column:span 1">
+            <div class="metric-icon">🌾</div>
+            <div class="metric-label">Farm Health Score</div>
+            <div class="metric-value text-green" id="health-score-val">—</div>
+            <div class="metric-sub" id="crop-health-val">Loading...</div>
+          </div>
+
+          <!-- Soil Moisture -->
+          <div class="metric-card">
+            <div class="metric-icon">💧</div>
+            <div class="metric-label">Soil Moisture</div>
+            <div class="metric-value text-blue" id="soil-moisture-val">—</div>
+            <div class="progress-bar mt-2" id="moisture-bar">
+              <div class="progress-fill progress-blue" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- Temperature -->
+          <div class="metric-card">
+            <div class="metric-icon">🌡️</div>
+            <div class="metric-label">Temperature</div>
+            <div class="metric-value text-amber" id="temperature-val">—</div>
+            <div class="metric-sub">Nashik, Maharashtra</div>
+          </div>
+
+          <!-- Rain Probability -->
+          <div class="metric-card">
+            <div class="metric-icon">🌧️</div>
+            <div class="metric-label">Rain Probability</div>
+            <div class="metric-value text-blue" id="rain-prob-val">—</div>
+            <div class="metric-sub">Tomorrow: High</div>
+          </div>
+
+          <!-- Pest Risk -->
+          <div class="metric-card">
+            <div class="metric-icon">🐛</div>
+            <div class="metric-label">Pest Risk</div>
+            <div class="metric-value text-amber" id="pest-risk-val">—</div>
+            <div class="progress-bar mt-2" id="pest-bar">
+              <div class="progress-fill progress-amber" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- Market Price -->
+          <div class="metric-card">
+            <div class="metric-icon">💰</div>
+            <div class="metric-label">Market Price</div>
+            <div class="metric-value text-green" id="market-price-val">—</div>
+            <div class="metric-sub">Nashik APMC /kg</div>
+          </div>
+
+          <!-- Expected Profit -->
+          <div class="metric-card">
+            <div class="metric-icon">📈</div>
+            <div class="metric-label">Expected Profit</div>
+            <div class="metric-value text-green" id="expected-profit-val">—</div>
+            <div class="metric-sub">At harvest (Apr)</div>
+          </div>
+
+          <!-- Expected Yield -->
+          <div class="metric-card">
+            <div class="metric-icon">🍅</div>
+            <div class="metric-label">Expected Yield</div>
+            <div class="metric-value text-purple" id="yield-val">—</div>
+            <div class="metric-sub">2-acre tomato farm</div>
+          </div>
+
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="grid-2" style="gap:20px;margin-bottom:20px">
+
+          <!-- Health Score Ring + Irrigation Rec -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">🌾 Farm Health Score</div>
+                <div class="card-subtitle">AI Digital Twin Assessment</div>
+              </div>
+              <span class="ibm-badge">FarmTwin Engine</span>
+            </div>
+            <div style="display:flex;gap:24px;align-items:center">
+              <div id="health-score-ring"></div>
+              <div style="flex:1">
+                <div style="margin-bottom:12px">
+                  <div class="text-sm text-muted">Today's Irrigation</div>
+                  <div id="irrigation-rec" style="margin-top:6px">
+                    <div class="pulse text-muted">Loading...</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-sm text-muted">Pest/Disease Status</div>
+                  <div style="font-size:13px;font-weight:600;margin-top:4px" id="pest-status-val">Loading...</div>
+                </div>
+                <div style="margin-top:12px">
+                  <div class="text-sm text-muted">Sustainability</div>
+                  <div style="font-size:20px;font-weight:800;color:var(--accent5)" id="sustainability-val">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Alerts -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">⚠️ Risk Alerts</div>
+                <div class="card-subtitle">AI-detected risks requiring attention</div>
+              </div>
+            </div>
+            <div class="alert-list" id="risk-alerts">
+              <div class="pulse text-muted text-sm">Analyzing farm conditions...</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Today's Actions + Timeline -->
+        <div class="grid-2" style="gap:20px;margin-bottom:20px">
+
+          <!-- Today's Actions -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">✅ Today's Actions</div>
+                <div class="card-subtitle">Prioritized farm activities for today</div>
+              </div>
+              <span class="ibm-badge">4 AI Agents</span>
+            </div>
+            <div class="action-list" id="todays-actions">
+              <div class="pulse text-muted text-sm">AI agents generating plan...</div>
+            </div>
+          </div>
+
+          <!-- 7-Day Timeline -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">📅 7-Day Farm Timeline</div>
+                <div class="card-subtitle">Week-ahead planning calendar</div>
+              </div>
+            </div>
+            <div class="timeline" id="timeline-7day">
+              <div class="pulse text-muted text-sm">Building timeline...</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Agents Status Banner -->
+        <div class="card" style="background:linear-gradient(135deg,rgba(74,222,128,0.05),rgba(96,165,250,0.05))">
+          <div class="card-header" style="margin-bottom:12px">
+            <div class="card-title">🤖 IBM AI Agent Orchestration</div>
+            <span class="ibm-badge">watsonx Orchestrate</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div style="background:var(--surface2);border-radius:8px;padding:14px;border:1px solid var(--border)">
+              <div style="font-size:20px;margin-bottom:6px">🌱</div>
+              <div style="font-size:12px;font-weight:700">Crop Advisory Agent</div>
+              <div class="text-sm text-muted">IBM Granite 13B</div>
+              <div class="flex items-center gap-1 mt-2"><span class="status-dot status-online"></span><span class="text-sm text-green">Active</span></div>
+            </div>
+            <div style="background:var(--surface2);border-radius:8px;padding:14px;border:1px solid var(--border)">
+              <div style="font-size:20px;margin-bottom:6px">🌤️</div>
+              <div style="font-size:12px;font-weight:700">Weather & Irrigation Agent</div>
+              <div class="text-sm text-muted">IBM Granite 13B</div>
+              <div class="flex items-center gap-1 mt-2"><span class="status-dot status-online"></span><span class="text-sm text-green">Active</span></div>
+            </div>
+            <div style="background:var(--surface2);border-radius:8px;padding:14px;border:1px solid var(--border)">
+              <div style="font-size:20px;margin-bottom:6px">🔬</div>
+              <div style="font-size:12px;font-weight:700">Pest/Disease Agent</div>
+              <div class="text-sm text-muted">IBM Granite Vision</div>
+              <div class="flex items-center gap-1 mt-2"><span class="status-dot status-online"></span><span class="text-sm text-green">Active</span></div>
+            </div>
+            <div style="background:var(--surface2);border-radius:8px;padding:14px;border:1px solid var(--border)">
+              <div style="font-size:20px;margin-bottom:6px">📊</div>
+              <div style="font-size:12px;font-weight:700">Market Insights Agent</div>
+              <div class="text-sm text-muted">IBM Granite 13B</div>
+              <div class="flex items-center gap-1 mt-2"><span class="status-dot status-online"></span><span class="text-sm text-green">Active</span></div>
+            </div>
+          </div>
+          <div class="text-sm text-muted mt-3" style="text-align:center">
+            🧪 <strong>Demo Mode</strong> · All agents running with realistic sample data · Green Valley Farm, Nashik, Maharashtra
+          </div>
+        </div>
+
+      </div><!-- /page-dashboard -->
+
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: MY FARM -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-my-farm" class="page" style="display:none">
+        <div class="section-header">
+          <div class="section-title">🏡 My Farm Profile</div>
+          <div class="section-sub">Demo: Green Valley Farm · 2-acre Tomato Farm · Nashik, Maharashtra</div>
+        </div>
+
+        <div class="grid-2" style="gap:20px">
+          <!-- Farm Details -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🌾 Farm Information</div>
+              <button class="topbar-btn btn-primary" onclick="saveFarmProfile()" style="padding:6px 14px;font-size:12px">💾 Save</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div class="grid-2" style="gap:10px">
+                <div>
+                  <label class="text-sm text-muted">Farm Name</label>
+                  <input type="text" id="farm-name" placeholder="Green Valley Farm" style="width:100%;margin-top:4px">
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Farmer Name</label>
+                  <input type="text" id="farm-farmer_name" placeholder="Rajesh Kumar" style="width:100%;margin-top:4px">
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Location</label>
+                  <input type="text" id="farm-location" placeholder="Nashik, Maharashtra" style="width:100%;margin-top:4px">
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Area (Acres)</label>
+                  <input type="number" id="farm-area_acres" placeholder="2.0" step="0.5" style="width:100%;margin-top:4px">
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Crop Type</label>
+                  <select id="farm-crop_type" style="width:100%;margin-top:4px">
+                    <option value="Tomato">Tomato</option>
+                    <option value="Onion">Onion</option>
+                    <option value="Wheat">Wheat</option>
+                    <option value="Rice">Rice</option>
+                    <option value="Cotton">Cotton</option>
+                    <option value="Sugarcane">Sugarcane</option>
+                    <option value="Soybean">Soybean</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Soil Type</label>
+                  <select id="farm-soil_type" style="width:100%;margin-top:4px">
+                    <option value="Loamy">Loamy</option>
+                    <option value="Sandy Loam">Sandy Loam</option>
+                    <option value="Clay">Clay</option>
+                    <option value="Black Cotton Soil">Black Cotton Soil</option>
+                    <option value="Red Laterite">Red Laterite</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Irrigation Type</label>
+                  <select id="farm-irrigation_type" style="width:100%;margin-top:4px">
+                    <option value="Drip Irrigation">Drip Irrigation</option>
+                    <option value="Sprinkler">Sprinkler</option>
+                    <option value="Flood">Flood</option>
+                    <option value="Furrow">Furrow</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Crop Stage</label>
+                  <select id="farm-crop_stage" style="width:100%;margin-top:4px">
+                    <option value="Germination">Germination</option>
+                    <option value="Seedling">Seedling</option>
+                    <option value="Vegetative">Vegetative</option>
+                    <option value="Flowering">Flowering</option>
+                    <option value="Fruit Set">Fruit Set</option>
+                    <option value="Maturation">Maturation</option>
+                    <option value="Harvest Ready">Harvest Ready</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Sowing Date</label>
+                  <input type="text" id="farm-sowing_date" placeholder="2024-01-15" style="width:100%;margin-top:4px">
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Expected Harvest</label>
+                  <input type="text" id="farm-expected_harvest" placeholder="2024-04-15" style="width:100%;margin-top:4px">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sensor Data -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📡 Sensor Readings</div>
+              <button class="topbar-btn btn-primary" onclick="saveSensors()" style="padding:6px 14px;font-size:12px">💾 Update</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="result-item">
+                <div class="result-item-label">Soil Moisture (%)</div>
+                <input type="number" id="sensor-soil_moisture" placeholder="61" min="0" max="100" style="width:100%;margin-top:4px">
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Temperature (°C)</div>
+                <input type="number" id="sensor-temperature" placeholder="29" min="-10" max="55" style="width:100%;margin-top:4px">
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Humidity (%)</div>
+                <input type="number" id="sensor-humidity" placeholder="68" min="0" max="100" style="width:100%;margin-top:4px">
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Rain Probability (%)</div>
+                <input type="number" id="sensor-rain_probability" placeholder="72" min="0" max="100" style="width:100%;margin-top:4px">
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Soil pH</div>
+                <input type="number" id="sensor-ph_level" placeholder="6.8" min="0" max="14" step="0.1" style="width:100%;margin-top:4px">
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Wind Speed (km/h)</div>
+                <input type="number" id="sensor-wind_speed" placeholder="12" min="0" max="200" style="width:100%;margin-top:4px">
+              </div>
+            </div>
+
+            <div style="margin-top:16px">
+              <div class="text-sm font-bold" style="margin-bottom:8px">🌱 NPK Levels (kg/ha)</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                <div>
+                  <label class="text-sm text-muted">Nitrogen (N)</label>
+                  <input type="number" id="sensor-nitrogen" placeholder="42" min="0" max="200" style="width:100%;margin-top:4px">
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Phosphorus (P)</label>
+                  <input type="number" id="sensor-phosphorus" placeholder="38" min="0" max="200" style="width:100%;margin-top:4px">
+                </div>
+                <div>
+                  <label class="text-sm text-muted">Potassium (K)</label>
+                  <input type="number" id="sensor-potassium" placeholder="55" min="0" max="200" style="width:100%;margin-top:4px">
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4" style="padding:12px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent2)">
+              <div class="text-sm text-muted">💡 Update sensor data to get personalized AI recommendations based on your real farm conditions.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-my-farm -->
+
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: AI ADVISOR -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-advisor" class="page" style="display:none">
+        <div class="section-header">
+          <div class="section-title">🤖 AI Crop Advisor</div>
+          <div class="section-sub">IBM Granite AI powered crop management recommendations</div>
+        </div>
+
+        <div class="grid-2" style="gap:20px;margin-bottom:20px">
+          <!-- Crop Status -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🌱 Crop Status</div>
+              <span class="ibm-badge">Crop Advisory Agent</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="result-item">
+                <div class="result-item-label">Growth Stage</div>
+                <div style="font-size:18px;font-weight:800;color:var(--accent)" id="advisor-stage">—</div>
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Health Score</div>
+                <div style="font-size:24px;font-weight:900;color:var(--accent)" id="advisor-health">—</div>
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Days to Harvest</div>
+                <div class="result-item-value result-neutral" id="advisor-days-harvest">—</div>
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Expected Yield</div>
+                <div class="result-item-value result-positive" id="advisor-yield">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fertilizer Recommendation -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🌿 Fertilizer Recommendation</div>
+            </div>
+            <div style="padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);margin-bottom:12px">
+              <div class="text-sm text-muted mb-2">Recommended Product</div>
+              <div style="font-size:15px;font-weight:700" id="advisor-fert-product">Loading...</div>
+            </div>
+            <div style="padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);margin-bottom:12px">
+              <div class="text-sm text-muted mb-2">Application Dose</div>
+              <div style="font-size:15px;font-weight:700;color:var(--accent2)" id="advisor-fert-dose">Loading...</div>
+            </div>
+            <div style="padding:12px;background:rgba(74,222,128,0.05);border-radius:8px;border-left:3px solid var(--accent)">
+              <div class="text-sm" id="advisor-fert-reason">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Crop Actions -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">✅ Recommended Actions</div>
+            <span class="ibm-badge">IBM Langflow RAG</span>
+          </div>
+          <div class="action-list" id="advisor-actions">
+            <div class="pulse text-muted text-sm">AI advisor generating recommendations...</div>
+          </div>
+        </div>
+      </div><!-- /page-advisor -->
+
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: DISEASE DETECTION -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-detection" class="page" style="display:none">
+        <div class="section-header">
+          <div class="section-title">🔬 Disease Detection</div>
+          <div class="section-sub">Upload crop image for AI analysis using IBM Granite Vision</div>
+        </div>
+
+        <div class="grid-2" style="gap:20px">
+          <!-- Upload Panel -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📷 Upload Crop Image</div>
+              <span class="ibm-badge">IBM Granite Vision</span>
+            </div>
+
+            <div id="upload-zone" class="upload-zone">
+              <div class="upload-zone-icon">🌿</div>
+              <div class="upload-zone-text">Drop your crop image here</div>
+              <div class="upload-zone-sub">or click to browse · JPEG, PNG, WebP supported</div>
+            </div>
+            <input type="file" id="disease-file" accept="image/*" style="display:none">
+            <img id="preview-img" alt="Preview" style="max-width:100%;max-height:300px;border-radius:8px;display:none;margin-top:12px;object-fit:contain">
+
+            <div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px">
+              <div class="text-sm text-muted">💡 Demo: Upload any crop image (or even a leaf photo) to see AI disease detection in action. The system will analyze for common tomato diseases like Early Blight, Leaf Curl Virus, and more.</div>
+            </div>
+
+            <button id="analyze-btn" class="topbar-btn btn-primary" onclick="analyzeImage()" style="width:100%;margin-top:16px;justify-content:center;padding:12px" disabled>
+              🔬 Analyze Image
+            </button>
+          </div>
+
+          <!-- Pest Risk Overview -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🐛 Current Pest Risk</div>
+              <span class="ibm-badge">Pest/Disease Agent</span>
+            </div>
+
+            <div class="grid-2" style="gap:12px;margin-bottom:16px">
+              <div class="result-item">
+                <div class="result-item-label">Risk Level</div>
+                <div style="font-size:20px;font-weight:800;color:var(--accent3)">Medium</div>
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">Risk Score</div>
+                <div style="font-size:24px;font-weight:900;color:var(--accent3)">34%</div>
+              </div>
+            </div>
+
+            <div style="margin-bottom:16px">
+              <div class="text-sm font-bold mb-2">High-Risk Diseases</div>
+              <div class="action-item" style="padding:10px 12px">
+                <span>🍅</span>
+                <div>
+                  <div style="font-size:13px;font-weight:700">Early Blight (Alternaria solani)</div>
+                  <div class="text-sm text-muted">Favored by current temp (29°C) + humidity (68%)</div>
+                </div>
+              </div>
+              <div class="action-item" style="padding:10px 12px;margin-top:6px">
+                <span>🦟</span>
+                <div>
+                  <div style="font-size:13px;font-weight:700">Leaf Curl Virus (Whitefly-borne)</div>
+                  <div class="text-sm text-muted">Monitor whitefly population; install yellow traps</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:12px;background:rgba(251,191,36,0.08);border-radius:8px;border-left:3px solid #fbbf24">
+              <div class="text-sm font-bold" style="color:#fbbf24">⚠️ Preventive Action Required</div>
+              <div class="text-sm text-muted mt-1">Scout daily. Apply Mancozeb 2g/L spray as preventive measure given current humidity levels.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis Result -->
+        <div id="disease-result-panel" style="display:none;flex-direction:column;gap:16px;margin-top:20px">
+          <!-- Rendered dynamically -->
+        </div>
+      </div><!-- /page-detection -->
+
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: IRRIGATION -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-irrigation" class="page" style="display:none">
+        <div class="section-header">
+          <div class="section-title">💧 Irrigation Management</div>
+          <div class="section-sub">AI-powered weather analysis and irrigation scheduling</div>
+        </div>
+
+        <!-- Recommendation Banner -->
+        <div class="card" style="background:linear-gradient(135deg,rgba(96,165,250,0.1),rgba(74,222,128,0.05));margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:20px">
+            <div style="font-size:48px">⏸️</div>
+            <div style="flex:1">
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:600;letter-spacing:1px">Today's Irrigation Decision</div>
+              <div style="font-size:24px;font-weight:900;color:var(--accent3);margin:4px 0" id="irr-recommendation">SKIP TODAY</div>
+              <div class="text-sm text-muted" id="irr-reason">Loading...</div>
+            </div>
+            <div style="text-align:center;padding:16px;background:rgba(74,222,128,0.1);border-radius:10px">
+              <div style="font-size:24px;font-weight:900;color:var(--accent)" id="irr-water-saved">—</div>
+              <div class="text-sm text-muted">Water Saved</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weather + Schedule -->
+        <div class="grid-2" style="gap:20px;margin-bottom:20px">
+          <!-- Current Weather -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🌤️ Current Weather</div>
+              <span class="ibm-badge">Weather Agent</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="result-item">
+                <div class="result-item-label">🌡️ Temperature</div>
+                <div class="result-item-value result-neutral" id="irr-temp">—</div>
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">💧 Humidity</div>
+                <div class="result-item-value result-neutral" id="irr-humidity">—</div>
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">🌧️ Rain Probability</div>
+                <div class="result-item-value result-positive" id="irr-rain">—</div>
+              </div>
+              <div class="result-item">
+                <div class="result-item-label">💨 Wind Speed</div>
+                <div class="result-item-value result-neutral" id="irr-wind">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Budget -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💰 Weekly Water Budget</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="flex justify-between">
+                <span class="text-sm text-muted">Baseline (without optimization)</span>
+                <span style="font-weight:700">3,360L</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-muted">Optimized schedule</span>
+                <span style="font-weight:700;color:var(--accent)">1,680L</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-muted">Water Savings</span>
+                <span style="font-weight:700;color:var(--accent)">50% (1,680L)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-muted">Cost Savings</span>
+                <span style="font-weight:700;color:var(--accent)">₹168/week</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-muted">Next Irrigation</span>
+                <span style="font-weight:700;color:var(--accent3)" id="irr-next">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-Day Forecast -->
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header">
+            <div class="card-title">📅 7-Day Weather Forecast</div>
+          </div>
+          <div id="weather-forecast">
+            <div class="pulse text-muted text-sm">Loading forecast...</div>
+          </div>
+        </div>
+
+        <!-- Irrigation Schedule -->
+        <div class="grid-2" style="gap:20px">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🗓️ 7-Day Irrigation Schedule</div>
+            </div>
+            <div id="irr-schedule">
+              <div class="pulse text-muted text-sm">Building schedule...</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💡 Water Saving Tips</div>
+            </div>
+            <div id="irr-tips">
+              <div class="pulse text-muted text-sm">Loading tips...</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-irrigation -->
+
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: MARKET INTELLIGENCE -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-market" class="page" style="display:none">
+        <div class="section-header">
+          <div class="section-title">📈 Market Intelligence</div>
+          <div class="section-sub">AI-powered price analysis and profit optimization</div>
+        </div>
+
+        <!-- Best Market Banner -->
+        <div class="card" style="background:linear-gradient(135deg,rgba(74,222,128,0.08),rgba(167,139,250,0.05));margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:20px">
+            <div style="font-size:48px">🏆</div>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:600">Best Market for Your Tomatoes</div>
+              <div style="font-size:22px;font-weight:900;color:var(--accent);margin:4px 0" id="best-market-name">Online (eNAM)</div>
+              <div class="text-sm text-muted">Register at enam.gov.in for direct buyer access</div>
+            </div>
+            <div style="margin-left:auto;text-align:center;padding:20px;background:rgba(74,222,128,0.1);border-radius:12px">
+              <div style="font-size:32px;font-weight:900;color:var(--accent)" id="best-market-price">₹38</div>
+              <div class="text-sm text-muted">per kg</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price Table + Chart -->
+        <div class="grid-2" style="gap:20px;margin-bottom:20px">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💰 Current Prices</div>
+              <span class="ibm-badge">Market Agent</span>
+            </div>
+            <div id="market-prices-table">
+              <div class="pulse text-muted text-sm">Loading prices...</div>
+            </div>
+          </div>
+
+          <!-- Profit Analysis -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📊 Profit Analysis (2 Acres)</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="flex justify-between" style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <span class="text-sm">Expected Yield</span>
+                <span style="font-weight:700">4,200 kg (4.2T)</span>
+              </div>
+              <div class="flex justify-between" style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <span class="text-sm">Grade A (75%)</span>
+                <span style="font-weight:700">3,150 kg</span>
+              </div>
+              <div class="flex justify-between" style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <span class="text-sm">Production Costs</span>
+                <span style="font-weight:700;color:var(--accent4)">₹23,200</span>
+              </div>
+              <div class="flex justify-between" style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <span class="text-sm">Revenue (at ₹38/kg)</span>
+                <span style="font-weight:700;color:var(--accent)">₹1,59,600</span>
+              </div>
+              <div class="flex justify-between" style="padding:10px 0;background:rgba(74,222,128,0.05);padding:12px;border-radius:8px">
+                <span style="font-weight:700;font-size:15px">Net Profit</span>
+                <span style="font-weight:900;font-size:20px;color:var(--accent)">₹1,36,400</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-muted">ROI</span>
+                <span style="font-weight:700;color:var(--accent)">488%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm text-muted">Breakeven Price</span>
+                <span style="font-weight:700">₹5.52/kg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price History Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📈 7-Day Price History (₹/kg)</div>
+            <span class="ibm-badge">IBM Granite AI</span>
+          </div>
+          <div id="price-history-chart">
+            <div class="pulse text-muted text-sm">Building price chart...</div>
+          </div>
+        </div>
+      </div><!-- /page-market -->
+
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: WHAT-IF SIMULATOR -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-whatif" class="page" style="display:none">
+        <div class="section-header">
+          <div class="section-title">🔮 What-If Simulator</div>
+          <div class="section-sub">Adjust farm parameters and instantly see impact on yield, cost, and profit</div>
+        </div>
+
+        <div class="grid-2" style="gap:20px">
+          <!-- Controls -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚙️ Scenario Parameters</div>
+              <span class="ibm-badge">Pure Python Math</span>
+            </div>
+
+            <!-- Irrigation Slider -->
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>💧 Irrigation Amount</span>
+                <span class="slider-value" id="wi-irrigation-val">100%</span>
+              </div>
+              <input type="range" id="wi-irrigation" min="20" max="150" value="100" step="5">
+              <div class="text-sm text-muted">Baseline: 480L/session · Drip irrigation</div>
+            </div>
+
+            <!-- Fertilizer Slider -->
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>🌱 Fertilizer Amount</span>
+                <span class="slider-value" id="wi-fertilizer-val">100%</span>
+              </div>
+              <input type="range" id="wi-fertilizer" min="20" max="150" value="100" step="5">
+              <div class="text-sm text-muted">Recommended: NPK 120:60:60 kg/ha</div>
+            </div>
+
+            <!-- Harvest Timing Slider -->
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>📅 Harvest Timing</span>
+                <span class="slider-value" id="wi-harvest-val">Optimal</span>
+              </div>
+              <input type="range" id="wi-harvest" min="-14" max="14" value="0" step="1">
+              <div class="text-sm text-muted">Optimal: April 15, 2024</div>
+            </div>
+
+            <!-- Market Selection -->
+            <div class="slider-group">
+              <div class="slider-label">
+                <span>🏪 Selling Market</span>
+              </div>
+              <select id="wi-market" style="width:100%;margin-top:6px">
+                <option value="Local Market">Local Market (₹28/kg)</option>
+                <option value="Nashik APMC">Nashik APMC (₹32/kg)</option>
+                <option value="Pune APMC">Pune APMC (₹30/kg)</option>
+                <option value="Mumbai Wholesale">Mumbai Wholesale (₹35/kg)</option>
+                <option value="Online (eNAM)">Online / eNAM (₹38/kg)</option>
+              </select>
+            </div>
+
+            <button onclick="runWhatIf()" class="topbar-btn btn-primary" style="width:100%;justify-content:center;margin-top:12px">
+              🔮 Recalculate Scenario
+            </button>
+          </div>
+
+          <!-- Results -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📊 Scenario Results</div>
+              </div>
+              <div class="result-grid">
+                <div class="result-item">
+                  <div class="result-item-label">💧 Water Used/Week</div>
+                  <div class="result-item-value result-neutral" id="wi-water-saved">—</div>
+                  <div class="text-sm" id="wi-water-saved-pct" style="color:var(--accent)">—</div>
+                </div>
+                <div class="result-item">
+                  <div class="result-item-label">🌾 Scenario Yield</div>
+                  <div class="result-item-value result-positive" id="wi-yield">—</div>
+                  <div class="text-sm" id="wi-yield-change">—</div>
+                </div>
+                <div class="result-item">
+                  <div class="result-item-label">💸 Total Cost</div>
+                  <div class="result-item-value result-negative" id="wi-cost">—</div>
+                </div>
+                <div class="result-item">
+                  <div class="result-item-label">💰 Gross Revenue</div>
+                  <div class="result-item-value result-positive" id="wi-revenue">—</div>
+                </div>
+                <div class="result-item">
+                  <div class="result-item-label">🏆 Net Profit</div>
+                  <div class="result-item-value result-positive" id="wi-profit" style="font-size:22px">—</div>
+                  <div class="text-sm" id="wi-profit-vs-base">vs baseline</div>
+                </div>
+                <div class="result-item">
+                  <div class="result-item-label">📈 ROI</div>
+                  <div class="result-item-value result-positive" id="wi-roi">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sustainability Score Ring -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🌿 Sustainability Score</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:24px">
+                <div id="wi-sustainability-ring" style="flex-shrink:0"></div>
+                <div>
+                  <div id="wi-insights"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profit Comparison Chart + Recommendation -->
+        <div class="grid-2" style="gap:20px;margin-top:20px">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📊 Profit Comparison</div>
+            </div>
+            <div id="wi-profit-chart" style="min-height:160px"></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💡 AI Recommendation</div>
+            </div>
+            <div id="wi-recommendation">
+              <div class="pulse text-muted text-sm">Running simulation...</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-whatif -->
+
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- PAGE: KNOWLEDGE CENTER -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <div id="page-knowledge" class="page" style="display:none">
+        <div class="section-header">
+          <div class="section-title">📚 Knowledge Center</div>
+          <div class="section-sub">Agricultural RAG Knowledge Base powered by IBM Langflow</div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-box" style="margin-bottom:24px;max-width:600px">
+          <span>🔍</span>
+          <input type="text" id="knowledge-search" placeholder="Ask a farming question... e.g. How to control Early Blight?">
+          <button class="topbar-btn btn-primary" onclick="searchKnowledge()" style="padding:6px 16px;font-size:13px">Search</button>
+        </div>
+
+        <!-- Search Result -->
+        <div id="knowledge-search-result" style="display:none;margin-bottom:24px"></div>
+
+        <!-- Knowledge Cards -->
+        <div class="knowledge-grid" id="knowledge-grid">
+          <div class="pulse text-muted text-sm">Loading knowledge base...</div>
+        </div>
+
+        <!-- IBM Tech Stack Info -->
+        <div class="card" style="margin-top:24px;background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(167,139,250,0.05))">
+          <div class="card-title" style="margin-bottom:16px">🤖 Powered by IBM AI Technology</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+            <div>
+              <div style="font-weight:700;color:var(--accent2);margin-bottom:4px">IBM Langflow</div>
+              <div class="text-sm text-muted">RAG pipeline for agricultural knowledge retrieval. Indexes crop guidelines, pest management, government advisories.</div>
+            </div>
+            <div>
+              <div style="font-weight:700;color:var(--accent2);margin-bottom:4px">IBM Granite 13B</div>
+              <div class="text-sm text-muted">Language model for generating personalized farming recommendations based on your actual farm data.</div>
+            </div>
+            <div>
+              <div style="font-weight:700;color:var(--accent2);margin-bottom:4px">IBM Granite Vision</div>
+              <div class="text-sm text-muted">Vision model for analyzing crop images and detecting diseases, pests, and nutritional deficiencies.</div>
+            </div>
+            <div>
+              <div style="font-weight:700;color:var(--accent2);margin-bottom:4px">IBM watsonx Orchestrate</div>
+              <div class="text-sm text-muted">Multi-agent orchestration coordinating 4 AI agents (Crop, Weather, Pest, Market) for unified farm decisions.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-knowledge -->
+
+    </div><!-- /page-content -->
+  </main>
+</div><!-- /app -->
+
+
+<!-- ─── Knowledge Modal ─── -->
+<div class="modal-overlay" id="knowledge-modal" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="card-title" id="km-title"></div>
+      <button class="modal-close" onclick="document.getElementById('knowledge-modal').classList.remove('active')">✕</button>
+    </div>
+    <div id="km-content" style="line-height:1.8;font-size:13px;white-space:pre-wrap"></div>
+  </div>
+</div>
+
+
+<!-- ─── AI Chatbot ─── -->
+<button id="chatbot-fab" onclick="toggleChat()" title="Ask FarmTwin AI">💬</button>
+
+<div id="chatbot-panel" class="hidden">
+  <div class="chatbot-header">
+    <div class="chatbot-title">
+      <span>🌾</span>
+      <div>
+        <div>Ask FarmTwin AI</div>
+        <div style="font-size:10px;font-weight:400;color:var(--text-muted)">IBM Granite + RAG · Demo Mode</div>
+      </div>
+    </div>
+    <button onclick="toggleChat()" class="modal-close">✕</button>
+  </div>
+
+  <div class="chatbot-messages" id="chat-messages"></div>
+
+  <div class="chatbot-suggestions">
+    <div class="suggestion-chip" onclick="useSuggestion('Should I irrigate today?')">💧 Irrigate today?</div>
+    <div class="suggestion-chip" onclick="useSuggestion('Why are my leaves turning yellow?')">🍃 Yellow leaves?</div>
+    <div class="suggestion-chip" onclick="useSuggestion('When should I harvest?')">📅 When to harvest?</div>
+    <div class="suggestion-chip" onclick="useSuggestion('Which market gives me highest profit?')">💰 Best market?</div>
+    <div class="suggestion-chip" onclick="useSuggestion('What fertilizer should I apply this week?')">🌱 Fertilizer?</div>
+  </div>
+
+  <div class="chatbot-input-area">
+    <textarea id="chat-input" placeholder="Ask about your tomato farm..." rows="2"></textarea>
+    <button class="chat-send-btn" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
